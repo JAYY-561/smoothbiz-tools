@@ -2,6 +2,7 @@
 import Navigation from "@/components/Navigation";
 import { ArrowRight, FileType, Image, FileText, Minimize2, File } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const Tools = () => {
   const tools = [
@@ -9,42 +10,42 @@ const Tools = () => {
       title: "PDF Merge",
       icon: <FileType className="h-8 w-8" />,
       description: "Combine multiple PDF files into a single document",
-      comingSoon: true,
+      path: "/tools/pdf-merge",
+      comingSoon: false,
     },
     {
       title: "Background Remove",
       icon: <Image className="h-8 w-8" />,
       description: "Remove image backgrounds with AI precision",
-      comingSoon: true,
-    },
-    {
-      title: "Edit PDF",
-      icon: <FileText className="h-8 w-8" />,
-      description: "Edit text and images in your PDF files",
-      comingSoon: true,
-    },
-    {
-      title: "PDF to JPG",
-      icon: <Image className="h-8 w-8" />,
-      description: "Convert PDF pages to JPG images",
-      comingSoon: true,
-    },
-    {
-      title: "JPG to PDF",
-      icon: <File className="h-8 w-8" />,
-      description: "Convert JPG images to PDF format",
-      comingSoon: true,
-    },
-    {
-      title: "Compress Image",
-      icon: <Minimize2 className="h-8 w-8" />,
-      description: "Reduce image file size without losing quality",
+      path: "/tools/background-remove",
       comingSoon: true,
     },
     {
       title: "PDF to Word",
       icon: <FileText className="h-8 w-8" />,
       description: "Convert PDF files to editable Word documents",
+      path: "/tools/pdf-to-word",
+      comingSoon: false,
+    },
+    {
+      title: "PDF to JPG",
+      icon: <Image className="h-8 w-8" />,
+      description: "Convert PDF pages to JPG images",
+      path: "/tools/pdf-to-jpg",
+      comingSoon: true,
+    },
+    {
+      title: "JPG to PDF",
+      icon: <File className="h-8 w-8" />,
+      description: "Convert JPG images to PDF format",
+      path: "/tools/jpg-to-pdf",
+      comingSoon: true,
+    },
+    {
+      title: "Compress Image",
+      icon: <Minimize2 className="h-8 w-8" />,
+      description: "Reduce image file size without losing quality",
+      path: "/tools/compress-image",
       comingSoon: true,
     },
   ];
@@ -90,9 +91,12 @@ const Tools = () => {
                     Coming Soon
                   </span>
                 ) : (
-                  <button className="inline-flex items-center text-primary hover:text-primary-hover">
+                  <Link
+                    to={tool.path}
+                    className="inline-flex items-center text-primary hover:text-primary-hover"
+                  >
                     Try Now <ArrowRight className="ml-2 h-4 w-4" />
-                  </button>
+                  </Link>
                 )}
               </motion.div>
             ))}

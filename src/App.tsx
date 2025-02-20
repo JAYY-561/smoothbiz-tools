@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Tools from "./pages/Tools";
+import PdfMerge from "./pages/tools/PdfMerge";
+import PdfToWord from "./pages/tools/PdfToWord";
 import UseCases from "./pages/UseCases";
 import Blog from "./pages/Blog";
 import Reviews from "./pages/Reviews";
@@ -24,6 +26,8 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/tools" element={<Tools />} />
+          <Route path="/tools/pdf-merge" element={<PdfMerge />} />
+          <Route path="/tools/pdf-to-word" element={<PdfToWord />} />
           <Route path="/use-cases" element={<UseCases />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/reviews" element={<Reviews />} />
