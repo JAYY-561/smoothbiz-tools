@@ -167,5 +167,26 @@ const Contact = () => {
               <div className="bg-white rounded-xl p-8 shadow-sm">
                 <h2 className="text-2xl font-semibold mb-6">FAQ</h2>
                 <div className="space-y-6">
+                  <div className="mb-4">
+                    <h3 className="font-medium mb-2">How long does implementation take?</h3>
+                    <p className="text-gray-600">Implementation time varies based on the complexity of your needs, typically ranging from 2-8 weeks.</p>
+                  </div>
+                  <div className="mb-4">
+                    <h3 className="font-medium mb-2">Do you offer custom solutions?</h3>
+                    <p className="text-gray-600">Yes, we specialize in creating custom automation solutions tailored to your specific business needs.</p>
+                  </div>
                   <div>
-                    <h3 className="font-medium mb-
+                    <h3 className="font-medium mb-2">What industries do you serve?</h3>
+                    <p className="text-gray-600">We work with businesses across various industries, including tech, healthcare, finance, and manufacturing.</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default Contact;
