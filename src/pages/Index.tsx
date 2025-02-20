@@ -2,6 +2,7 @@
 import { ArrowRight, Bot, Zap, BarChart } from "lucide-react";
 import { motion } from "framer-motion";
 import Navigation from "@/components/Navigation";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   return (
@@ -37,19 +38,19 @@ const Index = () => {
               transition={{ duration: 0.5, delay: 0.4 }}
               className="mt-10 flex justify-center gap-4"
             >
-              <a
-                href="/contact"
+              <Link
+                to="/contact"
                 className="px-8 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-hover transition-colors inline-flex items-center group"
               >
                 Get Started
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </a>
-              <a
-                href="/tools"
+              </Link>
+              <Link
+                to="/tools"
                 className="px-8 py-3 bg-white text-gray-900 rounded-lg font-medium border border-gray-200 hover:border-gray-300 transition-colors"
               >
                 Try Free Tools
-              </a>
+              </Link>
             </motion.div>
           </div>
         </div>
