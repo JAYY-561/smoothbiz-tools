@@ -1,6 +1,6 @@
 
 import Navigation from "@/components/Navigation";
-import { ArrowRight, FileType, Image, FileText, Minimize2, File } from "lucide-react";
+import { ArrowRight, FileType, Image, FileText, Minimize2, File, Calculator } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
@@ -46,7 +46,14 @@ const Tools = () => {
       icon: <Minimize2 className="h-8 w-8" />,
       description: "Reduce image file size without losing quality",
       path: "/tools/compress-image",
-      comingSoon: true,
+      comingSoon: false,
+    },
+    {
+      title: "GST Calculator",
+      icon: <Calculator className="h-8 w-8" />,
+      description: "Calculate GST amount and total price",
+      path: "/tools/gst-calculator",
+      comingSoon: false,
     },
   ];
 

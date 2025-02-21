@@ -11,6 +11,8 @@ import PdfToWord from "./pages/tools/PdfToWord";
 import PdfToJpg from "./pages/tools/PdfToJpg";
 import JpgToPdf from "./pages/tools/JpgToPdf";
 import BackgroundRemove from "./pages/tools/BackgroundRemove";
+import CompressImage from "./pages/tools/CompressImage";
+import GstCalculator from "./pages/tools/GstCalculator";
 import UseCases from "./pages/UseCases";
 import Blog from "./pages/Blog";
 import Reviews from "./pages/Reviews";
@@ -34,6 +36,8 @@ const App = () => (
           <Route path="/tools/pdf-to-jpg" element={<PdfToJpg />} />
           <Route path="/tools/jpg-to-pdf" element={<JpgToPdf />} />
           <Route path="/tools/background-remove" element={<BackgroundRemove />} />
+          <Route path="/tools/compress-image" element={<CompressImage />} />
+          <Route path="/tools/gst-calculator" element={<GstCalculator />} />
           <Route path="/use-cases" element={<UseCases />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/reviews" element={<Reviews />} />
