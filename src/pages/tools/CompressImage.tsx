@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import { motion } from "framer-motion";
@@ -7,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import RequireAuth from "@/components/RequireAuth";
 
 const CompressImage = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -52,6 +52,9 @@ const CompressImage = () => {
       });
     }
   };
+
+  // Wrap the handle function with RequireAuth
+  const protectedHandleCompress = RequireAuth({ onAction: handleCompress });
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-blue-50 to-white">
@@ -155,7 +158,7 @@ const CompressImage = () => {
                   </div>
 
                   <button
-                    onClick={handleCompress}
+                    onClick={protectedHandleCompress}
                     className="mt-6 w-full bg-primary text-white py-3 px-4 rounded-lg hover:bg-primary-hover transition-colors"
                   >
                     Compress Image

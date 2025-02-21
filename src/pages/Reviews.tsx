@@ -2,35 +2,92 @@
 import Navigation from "@/components/Navigation";
 import { motion } from "framer-motion";
 import { Star, User } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 const Reviews = () => {
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const [name, setName] = useState("");
+  const [company, setCompany] = useState("");
+  const [reviews, setReviews] = useState<any[]>([]);
+  const { session } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const reviews = [
-    {
-      name: "Emily Thompson",
-      company: "Tech Solutions Inc.",
-      rating: 5,
-      comment: "AutomatePro transformed our customer service operations. The automation solutions they implemented saved us countless hours and improved our response times dramatically.",
-      date: "March 15, 2024",
-    },
-    {
-      name: "Michael Chen",
-      company: "Global Logistics",
-      rating: 5,
-      comment: "Their expertise in business automation is unmatched. The team went above and beyond to understand our needs and deliver a solution that exceeded our expectations.",
-      date: "March 12, 2024",
-    },
-    {
-      name: "Sarah Williams",
-      company: "Digital Marketing Agency",
-      rating: 4,
-      comment: "Great service and support throughout the implementation process. The automated workflows have significantly improved our team's productivity.",
-      date: "March 10, 2024",
-    },
-  ];
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
+  const fetchReviews = async () => {
+    const { data, error } = await supabase
+      .from('reviews')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      console.error('Error fetching reviews:', error);
+      return;
+    }
+
+    setReviews(data || []);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!session) {
+      navigate('/auth');
+      return;
+    }
+
+    if (rating === 0) {
+      toast({
+        title: "Please select a rating",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('reviews')
+        .insert([
+          {
+            user_id: session.user.id,
+            rating,
+            comment,
+          }
+        ]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Review submitted successfully",
+        description: "Thank you for your feedback!"
+      });
+
+      // Reset form
+      setRating(0);
+      setComment("");
+      setName("");
+      setCompany("");
+
+      // Refresh reviews
+      fetchReviews();
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      toast({
+        title: "Error submitting review",
+        description: "Please try again later",
+        variant: "destructive"
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
@@ -72,8 +129,7 @@ const Reviews = () => {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-semibold">{review.name}</h3>
-                    <p className="text-gray-600">{review.company}</p>
+                    <p className="text-gray-600">{review.user_id}</p>
                   </div>
                 </div>
                 <div className="flex mb-4">
@@ -89,7 +145,9 @@ const Reviews = () => {
                   ))}
                 </div>
                 <p className="text-gray-700 mb-2">{review.comment}</p>
-                <p className="text-sm text-gray-500">{review.date}</p>
+                <p className="text-sm text-gray-500">
+                  {new Date(review.created_at).toLocaleDateString()}
+                </p>
               </motion.div>
             ))}
           </div>
@@ -97,64 +155,59 @@ const Reviews = () => {
           <div className="max-w-2xl mx-auto">
             <div className="bg-white p-8 rounded-xl shadow-sm">
               <h2 className="text-2xl font-semibold mb-6">Share Your Experience</h2>
-              <form className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Your Name
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder="John Doe"
-                  />
+              {!session ? (
+                <div className="text-center py-6">
+                  <p className="text-gray-600 mb-4">Please sign in to submit a review</p>
+                  <button
+                    onClick={() => navigate('/auth')}
+                    className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-hover transition-colors"
+                  >
+                    Sign In
+                  </button>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Company
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder="Your Company Name"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Rating
-                  </label>
-                  <div className="flex space-x-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        className={`h-8 w-8 cursor-pointer ${
-                          star <= (hoveredRating || rating)
-                            ? "text-yellow-400 fill-current"
-                            : "text-gray-300"
-                        }`}
-                        onMouseEnter={() => setHoveredRating(star)}
-                        onMouseLeave={() => setHoveredRating(0)}
-                        onClick={() => setRating(star)}
-                      />
-                    ))}
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Rating
+                    </label>
+                    <div className="flex space-x-2">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                          key={star}
+                          className={`h-8 w-8 cursor-pointer ${
+                            star <= (hoveredRating || rating)
+                              ? "text-yellow-400 fill-current"
+                              : "text-gray-300"
+                          }`}
+                          onMouseEnter={() => setHoveredRating(star)}
+                          onMouseLeave={() => setHoveredRating(0)}
+                          onClick={() => setRating(star)}
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Your Review
-                  </label>
-                  <textarea
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                    rows={4}
-                    placeholder="Share your experience with our services..."
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary-hover transition-colors"
-                >
-                  Submit Review
-                </button>
-              </form>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Your Review
+                    </label>
+                    <textarea
+                      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                      rows={4}
+                      required
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      placeholder="Share your experience with our services..."
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary-hover transition-colors"
+                  >
+                    Submit Review
+                  </button>
+                </form>
+              )}
             </div>
           </div>
         </div>
