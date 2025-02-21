@@ -18,7 +18,7 @@ const Tools = () => {
       icon: <Image className="h-8 w-8" />,
       description: "Remove image backgrounds with AI precision",
       path: "/tools/background-remove",
-      comingSoon: true,
+      comingSoon: false,
     },
     {
       title: "PDF to Word",
@@ -32,14 +32,14 @@ const Tools = () => {
       icon: <Image className="h-8 w-8" />,
       description: "Convert PDF pages to JPG images",
       path: "/tools/pdf-to-jpg",
-      comingSoon: true,
+      comingSoon: false,
     },
     {
       title: "JPG to PDF",
       icon: <File className="h-8 w-8" />,
       description: "Convert JPG images to PDF format",
       path: "/tools/jpg-to-pdf",
-      comingSoon: true,
+      comingSoon: false,
     },
     {
       title: "Compress Image",

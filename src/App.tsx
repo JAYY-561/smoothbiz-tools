@@ -8,6 +8,9 @@ import Index from "./pages/Index";
 import Tools from "./pages/Tools";
 import PdfMerge from "./pages/tools/PdfMerge";
 import PdfToWord from "./pages/tools/PdfToWord";
+import PdfToJpg from "./pages/tools/PdfToJpg";
+import JpgToPdf from "./pages/tools/JpgToPdf";
+import BackgroundRemove from "./pages/tools/BackgroundRemove";
 import UseCases from "./pages/UseCases";
 import Blog from "./pages/Blog";
 import Reviews from "./pages/Reviews";
@@ -28,6 +31,9 @@ const App = () => (
           <Route path="/tools" element={<Tools />} />
           <Route path="/tools/pdf-merge" element={<PdfMerge />} />
           <Route path="/tools/pdf-to-word" element={<PdfToWord />} />
+          <Route path="/tools/pdf-to-jpg" element={<PdfToJpg />} />
+          <Route path="/tools/jpg-to-pdf" element={<JpgToPdf />} />
+          <Route path="/tools/background-remove" element={<BackgroundRemove />} />
           <Route path="/use-cases" element={<UseCases />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/reviews" element={<Reviews />} />
