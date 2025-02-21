@@ -32,8 +32,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+    } catch (error: any) {
       toast({
         title: "Error signing in",
         description: error.message,
@@ -44,29 +46,42 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signUp = async (email: string, password: string, phone: string) => {
-    const { error: signUpError } = await supabase.auth.signUp({ 
-      email, 
-      password,
-      options: {
-        data: {
-          phone_number: phone,
-        },
-      },
-    });
+    try {
+      if (!phone || phone.trim() === '') {
+        throw new Error('Phone number is required');
+      }
 
-    if (signUpError) {
+      const { error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            phone_number: phone.trim(),
+          },
+        },
+      });
+
+      if (signUpError) throw signUpError;
+
+      toast({
+        title: "Account created successfully",
+        description: "Please check your email for verification.",
+      });
+    } catch (error: any) {
       toast({
         title: "Error signing up",
-        description: signUpError.message,
+        description: error.message,
         variant: "destructive",
       });
-      throw signUpError;
+      throw error;
     }
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+    } catch (error: any) {
       toast({
         title: "Error signing out",
         description: error.message,
