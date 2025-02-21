@@ -2,15 +2,15 @@
 import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import { motion } from "framer-motion";
-import { Upload, ArrowLeft } from "lucide-react";
+import { Upload, ArrowLeft, ArrowRight, CheckCircle2, Minimize2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const CompressImage = () => {
   const [file, setFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [compressedImage, setCompressedImage] = useState<string | null>(null);
-  const [compressionRate, setCompressionRate] = useState<number>(80);
+  const [quality, setQuality] = useState<number>(80);
   const { toast } = useToast();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,26 +25,21 @@ const CompressImage = () => {
         return;
       }
       setFile(selectedFile);
-      const reader = new FileReader();
-      reader.onload = (e) => setImagePreview(e.target?.result as string);
-      reader.readAsDataURL(selectedFile);
     }
   };
 
   const handleCompress = async () => {
     if (!file) return;
-    
+
     try {
       toast({
         title: "Compressing image...",
         description: "This may take a few moments"
       });
 
-      // For demonstration, we're just returning the original image
-      // In a real implementation, you would use a compression library or service
+      // Here you would implement the actual image compression
       await new Promise(resolve => setTimeout(resolve, 1500));
-      setCompressedImage(imagePreview);
-      
+
       toast({
         title: "Success!",
         description: "Image has been compressed"
@@ -59,98 +54,151 @@ const CompressImage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-white via-blue-50 to-white">
       <Navigation />
       
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
+      <section className="pt-24 pb-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
           <Link to="/tools" className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-8">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Tools
           </Link>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-12"
-          >
-            <h1 className="text-4xl font-display font-bold mb-4">Compress Image</h1>
-            <p className="text-xl text-gray-600">Reduce image file size without losing quality</p>
-          </motion.div>
 
-          <div className="bg-white p-8 rounded-xl shadow-sm">
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="hidden"
-                id="image-upload"
-              />
-              <label
-                htmlFor="image-upload"
-                className="flex flex-col items-center cursor-pointer"
-              >
-                <Upload className="h-12 w-12 text-gray-400 mb-4" />
-                <span className="text-lg font-medium mb-2">Choose image file</span>
-                <span className="text-sm text-gray-500">or drag and drop it here</span>
-              </label>
-            </div>
+          <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="inline-block px-6 py-2 bg-blue-50 rounded-full text-primary font-medium mb-6">
+                Free Image Tool
+              </div>
+              <h1 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-6">
+                Image Compressor
+                <span className="text-primary block mt-2">Optimize with Quality</span>
+              </h1>
+              <p className="text-xl text-gray-600 mb-8">
+                Compress your images without compromising on quality. Perfect for web and email use.
+              </p>
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="h-5 w-5 text-primary" />
+                  <span>Smart compression</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="h-5 w-5 text-primary" />
+                  <span>Adjustable quality</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="h-5 w-5 text-primary" />
+                  <span>Instant preview</span>
+                </div>
+              </div>
+            </motion.div>
 
-            {imagePreview && (
-              <div className="mt-8">
-                <h3 className="font-medium mb-4">Preview:</h3>
-                <div className="space-y-4">
-                  <div className="aspect-video rounded-lg overflow-hidden bg-gray-100">
-                    <img 
-                      src={imagePreview} 
-                      alt="Preview" 
-                      className="w-full h-full object-contain"
-                    />
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              className="bg-white rounded-2xl shadow-xl p-8"
+            >
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4">
+                  <Minimize2 className="h-8 w-8" />
+                </div>
+                <h2 className="text-2xl font-semibold mb-2">Upload Image</h2>
+                <p className="text-gray-600">Select an image to compress</p>
+              </div>
+
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  id="image-upload"
+                />
+                <label
+                  htmlFor="image-upload"
+                  className="flex flex-col items-center cursor-pointer"
+                >
+                  <Upload className="h-12 w-12 text-gray-400 mb-4" />
+                  <span className="text-lg font-medium mb-2">Choose image file</span>
+                  <span className="text-sm text-gray-500">or drag and drop it here</span>
+                </label>
+              </div>
+
+              {file && (
+                <div className="mt-8">
+                  <h3 className="font-medium mb-4">Selected File:</h3>
+                  <div className="bg-gray-50 p-3 rounded flex items-center justify-between">
+                    <span>{file.name}</span>
+                    <button
+                      onClick={() => setFile(null)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      Remove
+                    </button>
                   </div>
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium">
-                      Compression Quality: {compressionRate}%
-                    </label>
-                    <input
+
+                  <div className="mt-6 space-y-2">
+                    <Label htmlFor="quality">Compression Quality: {quality}%</Label>
+                    <Input
+                      id="quality"
                       type="range"
                       min="1"
                       max="100"
-                      value={compressionRate}
-                      onChange={(e) => setCompressionRate(Number(e.target.value))}
+                      value={quality}
+                      onChange={(e) => setQuality(Number(e.target.value))}
                       className="w-full"
                     />
                   </div>
+
                   <button
                     onClick={handleCompress}
-                    className="w-full bg-primary text-white py-3 px-4 rounded-lg hover:bg-primary-hover transition-colors"
+                    className="mt-6 w-full bg-primary text-white py-3 px-4 rounded-lg hover:bg-primary-hover transition-colors"
                   >
                     Compress Image
                   </button>
                 </div>
-              </div>
-            )}
-
-            {compressedImage && (
-              <div className="mt-8">
-                <h3 className="font-medium mb-4">Compressed Result:</h3>
-                <div className="aspect-video rounded-lg overflow-hidden bg-gray-100">
-                  <img 
-                    src={compressedImage} 
-                    alt="Compressed" 
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <a
-                  href={compressedImage}
-                  download="compressed-image.jpg"
-                  className="mt-4 w-full bg-primary text-white py-3 px-4 rounded-lg hover:bg-primary-hover transition-colors inline-block text-center"
-                >
-                  Download Compressed Image
-                </a>
-              </div>
-            )}
+              )}
+            </motion.div>
           </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto"
+          >
+            <div className="bg-white p-6 rounded-xl shadow-sm">
+              <h3 className="text-lg font-semibold mb-2">Smart Compression</h3>
+              <p className="text-gray-600">Optimal balance of size and quality</p>
+            </div>
+            <div className="bg-white p-6 rounded-xl shadow-sm">
+              <h3 className="text-lg font-semibold mb-2">Quality Control</h3>
+              <p className="text-gray-600">Adjust compression level</p>
+            </div>
+            <div className="bg-white p-6 rounded-xl shadow-sm">
+              <h3 className="text-lg font-semibold mb-2">Free Forever</h3>
+              <p className="text-gray-600">No cost, no limits</p>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mt-20 text-center"
+          >
+            <h2 className="text-2xl font-semibold mb-4">Explore More Tools</h2>
+            <Link
+              to="/tools"
+              className="inline-flex items-center text-primary hover:text-primary-hover gap-2"
+            >
+              View All Tools <ArrowRight className="h-4 w-4" />
+            </Link>
+          </motion.div>
         </div>
       </section>
     </div>

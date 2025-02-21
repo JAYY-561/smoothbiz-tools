@@ -180,4 +180,16 @@ const JpgToPdf = () => {
           >
             <h2 className="text-2xl font-semibold mb-4">Explore More Tools</h2>
             <Link
-              to
+              to="/tools"
+              className="inline-flex items-center text-primary hover:text-primary-hover gap-2"
+            >
+              View All Tools <ArrowRight className="h-4 w-4" />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default JpgToPdf;
