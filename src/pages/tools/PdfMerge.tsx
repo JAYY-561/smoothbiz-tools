@@ -4,6 +4,7 @@ import Navigation from "@/components/Navigation";
 import { motion } from "framer-motion";
 import { Upload, ArrowLeft, ArrowRight, CheckCircle2, FileType } from "lucide-react";
 import { Link } from "react-router-dom";
+import RequireAuth from "@/components/RequireAuth";
 
 const PdfMerge = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -19,6 +20,9 @@ const PdfMerge = () => {
     // TODO: Implement PDF merge functionality
     console.log("Merging PDFs:", files);
   };
+
+  // Wrap the handle function with RequireAuth
+  const protectedHandleMerge = RequireAuth({ onAction: handleMerge });
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-blue-50 to-white">
@@ -113,7 +117,7 @@ const PdfMerge = () => {
                     ))}
                   </ul>
                   <button
-                    onClick={handleMerge}
+                    onClick={protectedHandleMerge}
                     className="mt-6 w-full bg-primary text-white py-3 px-4 rounded-lg hover:bg-primary-hover transition-colors"
                   >
                     Merge PDFs

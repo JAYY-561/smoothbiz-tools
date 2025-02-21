@@ -1,10 +1,10 @@
-
 import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import { motion } from "framer-motion";
 import { Upload, ArrowLeft, ArrowRight, CheckCircle2, Image } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import RequireAuth from "@/components/RequireAuth";
 
 const PdfToJpg = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -49,6 +49,9 @@ const PdfToJpg = () => {
       });
     }
   };
+
+  // Wrap the handle function with RequireAuth
+  const protectedHandleConvert = RequireAuth({ onAction: handleConvert });
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-blue-50 to-white">
@@ -138,7 +141,7 @@ const PdfToJpg = () => {
                     </button>
                   </div>
                   <button
-                    onClick={handleConvert}
+                    onClick={protectedHandleConvert}
                     className="mt-6 w-full bg-primary text-white py-3 px-4 rounded-lg hover:bg-primary-hover transition-colors"
                   >
                     Convert to JPG
