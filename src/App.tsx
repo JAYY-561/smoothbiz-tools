@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,7 +8,6 @@ import FloatingCTA from "@/components/FloatingCTA";
 import Index from "./pages/Index";
 import Tools from "./pages/Tools";
 import Auth from "./pages/Auth";
-import Admin from "./pages/Admin";
 import PdfMerge from "./pages/tools/PdfMerge";
 import PdfToWord from "./pages/tools/PdfToWord";
 import PdfToJpg from "./pages/tools/PdfToJpg";
@@ -37,7 +35,6 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/tools" element={<Tools />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/admin" element={<Admin />} />
             <Route path="/tools/pdf-merge" element={<PdfMerge />} />
             <Route path="/tools/pdf-to-word" element={<PdfToWord />} />
             <Route path="/tools/pdf-to-jpg" element={<PdfToJpg />} />
