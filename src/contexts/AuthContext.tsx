@@ -7,7 +7,11 @@ import { useToast } from "@/components/ui/use-toast";
 type AuthContextType = {
   session: AuthSession | null;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, phone: string) => Promise<void>;
+  signUp: (email: string, password: string, userData: {
+    phone: string;
+    firstName: string;
+    lastName: string;
+  }) => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -45,10 +49,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const signUp = async (email: string, password: string, phone: string) => {
+  const signUp = async (email: string, password: string, userData: {
+    phone: string;
+    firstName: string;
+    lastName: string;
+  }) => {
     try {
-      if (!phone || phone.trim() === '') {
+      if (!userData.phone || userData.phone.trim() === '') {
         throw new Error('Phone number is required');
+      }
+      if (!userData.firstName || userData.firstName.trim() === '') {
+        throw new Error('First name is required');
+      }
+      if (!userData.lastName || userData.lastName.trim() === '') {
+        throw new Error('Last name is required');
       }
 
       const { error: signUpError } = await supabase.auth.signUp({
@@ -56,7 +70,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         password,
         options: {
           data: {
-            phone_number: phone.trim(),
+            phone_number: userData.phone.trim(),
+            first_name: userData.firstName.trim(),
+            last_name: userData.lastName.trim(),
           },
         },
       });

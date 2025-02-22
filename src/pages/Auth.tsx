@@ -15,6 +15,8 @@ const AuthForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
@@ -26,7 +28,11 @@ const AuthForm = () => {
 
     try {
       if (isSignUp) {
-        await signUp(email, password, phone);
+        await signUp(email, password, {
+          phone,
+          firstName,
+          lastName,
+        });
       } else {
         await signIn(email, password);
         navigate(-1);
@@ -68,18 +74,46 @@ const AuthForm = () => {
       </div>
 
       {isSignUp && (
-        <div>
-          <Label htmlFor="phone">Phone Number</Label>
-          <Input
-            id="phone"
-            type="tel"
-            required
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="Enter your phone number"
-            className="mt-1"
-          />
-        </div>
+        <>
+          <div>
+            <Label htmlFor="firstName">First Name</Label>
+            <Input
+              id="firstName"
+              type="text"
+              required
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="Enter your first name"
+              className="mt-1"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="lastName">Last Name</Label>
+            <Input
+              id="lastName"
+              type="text"
+              required
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Enter your last name"
+              className="mt-1"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="phone">Phone Number</Label>
+            <Input
+              id="phone"
+              type="tel"
+              required
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Enter your phone number"
+              className="mt-1"
+            />
+          </div>
+        </>
       )}
 
       <Button
