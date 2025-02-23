@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -69,7 +68,17 @@ const BlogEditor = () => {
         .single();
 
       if (error) throw error;
-      if (data) setPost(data);
+      if (data) {
+        setPost({
+          id: data.id,
+          title: data.title,
+          excerpt: data.excerpt,
+          content: data.content,
+          image_url: data.image_url,
+          status: data.status as 'draft' | 'published',
+          author_id: data.author_id
+        });
+      }
     } catch (error) {
       console.error('Error fetching post:', error);
       toast({
@@ -83,50 +92,12 @@ const BlogEditor = () => {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setPost((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSave = async () => {
-    setIsSaving(true);
-
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) throw new Error("Not authenticated");
-
-      const postData = {
-        ...post,
-        author_id: session.user.id,
-      };
-
-      const { error } = id
-        ? await supabase
-            .from('blog_posts')
-            .update(postData)
-            .eq('id', id)
-        : await supabase
-            .from('blog_posts')
-            .insert([postData]);
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: id ? "Post updated successfully" : "Post created successfully",
-      });
-
-      navigate("/admin");
-    } catch (error) {
-      console.error('Error saving post:', error);
-      toast({
-        title: "Error",
-        description: "Could not save the blog post.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSaving(false);
-    }
+    setPost((prev) => ({ 
+      ...prev, 
+      [name]: name === 'status' ? (value as 'draft' | 'published') : value 
+    }));
   };
 
   if (isLoading) {

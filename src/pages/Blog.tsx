@@ -30,7 +30,7 @@ const Blog = () => {
         .from('blog_posts')
         .select(`
           *,
-          profiles!blog_posts_author_id_fkey (
+          profiles (
             first_name,
             last_name
           )
