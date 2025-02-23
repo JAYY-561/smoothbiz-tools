@@ -39,6 +39,7 @@ export const usePostManagement = (postId?: string) => {
     });
 
     if (error || !data) {
+      console.error('Error checking admin role:', error);
       toast({
         title: "Access Denied",
         description: "You don't have permission to access this page.",
