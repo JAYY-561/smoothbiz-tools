@@ -6,6 +6,22 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+type BlogPost = {
+  id: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  image_url: string | null;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  author_id: string;
+  profiles: {
+    first_name: string | null;
+    last_name: string | null;
+  } | null;
+};
+
 const Blog = () => {
   const { data: posts, isLoading } = useQuery({
     queryKey: ['blog-posts'],
@@ -14,7 +30,7 @@ const Blog = () => {
         .from('blog_posts')
         .select(`
           *,
-          profiles:author_id (
+          profiles!blog_posts_author_id_fkey (
             first_name,
             last_name
           )
@@ -23,7 +39,7 @@ const Blog = () => {
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data;
+      return data as BlogPost[];
     }
   });
 
@@ -91,9 +107,6 @@ const Blog = () => {
                     </div>
                   )}
                   <div className="p-6">
-                    <div className="text-sm text-primary font-medium mb-2">
-                      {post.category || 'General'}
-                    </div>
                     <h3 className="text-xl font-semibold mb-2">{post.title}</h3>
                     <p className="text-gray-600 mb-4">{post.excerpt}</p>
                     <div className="flex items-center text-sm text-gray-500 mb-4">

@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import Tools from "./pages/Tools";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
+import BlogEditor from "./pages/admin/BlogEditor";
 import PdfMerge from "./pages/tools/PdfMerge";
 import PdfToWord from "./pages/tools/PdfToWord";
 import PdfToJpg from "./pages/tools/PdfToJpg";
@@ -38,6 +39,8 @@ const App = () => (
             <Route path="/tools" element={<Tools />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/blog/new" element={<BlogEditor />} />
+            <Route path="/admin/blog/edit/:id" element={<BlogEditor />} />
             <Route path="/tools/pdf-merge" element={<PdfMerge />} />
             <Route path="/tools/pdf-to-word" element={<PdfToWord />} />
             <Route path="/tools/pdf-to-jpg" element={<PdfToJpg />} />
