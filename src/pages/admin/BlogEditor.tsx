@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -98,6 +99,47 @@ const BlogEditor = () => {
       ...prev, 
       [name]: name === 'status' ? (value as 'draft' | 'published') : value 
     }));
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) throw new Error("Not authenticated");
+
+      const postData = {
+        ...post,
+        author_id: session.user.id,
+      };
+
+      const { error } = id
+        ? await supabase
+            .from('blog_posts')
+            .update(postData)
+            .eq('id', id)
+        : await supabase
+            .from('blog_posts')
+            .insert([postData]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: id ? "Post updated successfully" : "Post created successfully",
+      });
+
+      navigate("/admin");
+    } catch (error) {
+      console.error('Error saving post:', error);
+      toast({
+        title: "Error",
+        description: "Could not save the blog post.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   if (isLoading) {
@@ -202,7 +244,7 @@ const BlogEditor = () => {
               <select
                 name="status"
                 value={post.status}
-                onChange={(e) => setPost(prev => ({ ...prev, status: e.target.value as 'draft' | 'published' }))}
+                onChange={handleChange}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               >
                 <option value="draft">Draft</option>

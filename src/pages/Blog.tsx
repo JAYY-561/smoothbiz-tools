@@ -30,7 +30,7 @@ const Blog = () => {
         .from('blog_posts')
         .select(`
           *,
-          profiles (
+          profiles!blog_posts_author_id_fkey (
             first_name,
             last_name
           )
@@ -39,7 +39,7 @@ const Blog = () => {
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data as BlogPost[];
+      return data as unknown as BlogPost[];
     }
   });
 
