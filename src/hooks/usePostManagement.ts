@@ -30,7 +30,7 @@ export const usePostManagement = (postId?: string) => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       navigate("/auth");
-      return;
+      return false;
     }
 
     const { data, error } = await supabase.rpc('has_role', {
@@ -45,7 +45,9 @@ export const usePostManagement = (postId?: string) => {
         variant: "destructive",
       });
       navigate("/admin");
+      return false;
     }
+    return true;
   };
 
   const fetchPost = async () => {
@@ -94,23 +96,53 @@ export const usePostManagement = (postId?: string) => {
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) throw new Error("Not authenticated");
+      if (!session?.user) {
+        throw new Error("Not authenticated");
+      }
+
+      const isAdmin = await checkAdminAccess();
+      if (!isAdmin) {
+        throw new Error("Not authorized");
+      }
+
+      // Ensure all required fields are present
+      if (!post.title || !post.excerpt || !post.content) {
+        toast({
+          title: "Validation Error",
+          description: "Please fill in all required fields.",
+          variant: "destructive",
+        });
+        return;
+      }
 
       const postData = {
-        ...post,
+        title: post.title,
+        excerpt: post.excerpt,
+        content: post.content,
+        image_url: post.image_url,
+        status: post.status,
         author_id: session.user.id,
       };
 
-      const { error } = postId
+      console.log('Saving post with data:', postData);
+
+      const { data, error } = postId
         ? await supabase
             .from('blog_posts')
             .update(postData)
             .eq('id', postId)
+            .select()
         : await supabase
             .from('blog_posts')
-            .insert([postData]);
+            .insert([postData])
+            .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+
+      console.log('Save response:', data);
 
       toast({
         title: "Success",
@@ -118,11 +150,11 @@ export const usePostManagement = (postId?: string) => {
       });
 
       navigate("/admin");
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving post:', error);
       toast({
         title: "Error",
-        description: "Could not save the blog post.",
+        description: error.message || "Could not save the blog post.",
         variant: "destructive",
       });
     } finally {
@@ -131,12 +163,15 @@ export const usePostManagement = (postId?: string) => {
   };
 
   useEffect(() => {
-    checkAdminAccess();
-    if (postId) {
-      fetchPost();
-    } else {
-      setIsLoading(false);
-    }
+    const init = async () => {
+      const isAdmin = await checkAdminAccess();
+      if (isAdmin && postId) {
+        await fetchPost();
+      } else if (isAdmin) {
+        setIsLoading(false);
+      }
+    };
+    init();
   }, [postId]);
 
   return {
